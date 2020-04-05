@@ -41,7 +41,7 @@ export function SimulationOutputs() {
 			
 			const { admittedPatients } = data;
 			const admitted = JSON.parse(admittedPatients);
-			setAdmitted((prev) => admittedPatients);
+			setAdmitted((prev) => admitted);
 			console.log(admitted);
 
 			const { day, icu, ventilated, hospitalized } = admitted;
@@ -70,6 +70,8 @@ export function SimulationOutputs() {
 			})
 			.catch((err) => console.log(err));
 	}, [inputId]);
+
+	console.log(admitted);
 
 	return (
 		<div className="content">

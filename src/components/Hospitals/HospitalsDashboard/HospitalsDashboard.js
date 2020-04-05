@@ -85,7 +85,7 @@ export function HospitalDashboard(props) {
 			<Row id="details">
 				<InfoCard
 					icon="fas fa-head-side-cough"
-					description="Επιβαιβεωμένα"
+					description="Επιβεβαιωμένα"
 					info={selectedHospital.confirmed}
 					footer={<CardFooter></CardFooter>}
 				/>
