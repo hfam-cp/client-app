@@ -1,7 +1,5 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-// react plugin for creating notifications over the dashboard
-import NotificationAlert from "react-notification-alert";
 
 // core components
 import { DefaultNavbar } from "../components/Navbars/DefaultNavbar";
@@ -96,9 +94,6 @@ export class DefaultLayout extends React.Component {
 	render() {
 		return (
 			<div className="wrapper">
-				<div className="rna-container">
-					<NotificationAlert ref={this.notificationAlert} />
-				</div>
 				<div
 					className="navbar-minimize-fixed"
 					style={{ opacity: this.state.opacity }}
