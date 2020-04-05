@@ -12,28 +12,7 @@ const useForm = (callback, initialState = {}) => {
 
 	const handleChange = (event) => {
 		event.persist();
-		if (event.target.type === "range") {
-			setValues((values) => ({
-				...values,
-				[event.target.name]: event.target.value / 100,
-			}));
-		} else if (event.target.type === "date") {
-			function formatDate(date) {
-				var d = new Date(date),
-					month = "" + (d.getMonth() + 1),
-					day = "" + d.getDate(),
-					year = d.getFullYear();
-
-				if (month.length < 2) month = Number(month);
-				if (day.length < 2) day = Number(day);
-
-				return [year, month, day].join("-");
-			}
-			setValues((values) => ({
-				...values,
-				[event.target.name]: formatDate(event.target.value),
-			}));
-		} else if(event.target.type === "number") {
+		if (event.target.type === "number") {
 			setValues((values) => ({
 				...values,
 				[event.target.name]: Number(event.target.value),

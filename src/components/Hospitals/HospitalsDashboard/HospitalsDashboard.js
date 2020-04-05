@@ -1,196 +1,113 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Row,
 	Col,
 	CardFooter,
-	Card,
-	CardHeader,
-	CardTitle,
-	ButtonGroup,
-	Button,
-	CardBody
 } from "reactstrap";
 import { InfoCard } from "components/InfoCard/InfoCard";
 import { HospitalsMap } from "../HospitalsMap/HospitalsMap";
-import classNames from "classnames";
-import { Line } from "react-chartjs-2";
-
-// core components
-import {
-    chartExample1,
-    } from "../../../variables/charts";
 
 export function HospitalDashboard(props) {
-    const [currentData, setData] = useState("data1");
+	const cachedHospitals = [
+		{
+			id: 1,
+			name: "Πανεπιστημιακό ΓΝ Ηρακλείου",
+			marketShare: 1,
+			currentHospitalized: 243,
+			capacity: 739,
+			latLong: "35.304163,25.083124",
+			confirmed: 10,
+			cured: 5,
+			admitted: 8,
+			region: 13,
+			inventory: 1,
+		},
+		{
+			id: 2,
+			name: "Πανεπιστημιακό ΓΝ Πατρών",
+			marketShare: 1,
+			currentHospitalized: 67,
+			capacity: 400,
+			latLong: "38.294786,21.795078",
+			confirmed: 32,
+			cured: 6,
+			admitted: 24,
+			region: 7,
+			inventory: 2,
+		},
+		{
+			id: 3,
+			name: "ΓΝ Νοσημάτων Θώρακος Αθηνών «Η Σωτηρία»",
+			marketShare: 0.5,
+			currentHospitalized: 427,
+			capacity: 700,
+			latLong: "37.995443,23.779517",
+			confirmed: 69,
+			cured: 34,
+			admitted: 50,
+			region: 9,
+			inventory: 3,
+		},
+		{
+			id: 4,
+			name: "Πανεπιστημιακό ΓΝ «Αττικόν»",
+			marketShare: 0.5,
+			currentHospitalized: 223,
+			capacity: 617,
+			latLong: "38.016843,23.665223",
+			confirmed: 90,
+			cured: 34,
+			admitted: 43,
+			region: 9,
+			inventory: 4,
+		},
+	];
+
+	const [hospitals, setHospitals] = useState(cachedHospitals);
+
+	useEffect(() => {
+		fetch("http://hfam.team/api/hospitals")
+			.then(res => res.json())
+			.then(json => setHospitals(json))
+			.catch(err => console.log(err));
+	}, []);
+
+	const [selectedHospital, setSelectedHospital] = useState({});
+	
+	function changeHospital(id) {
+		setSelectedHospital((prev) =>
+			setSelectedHospital(hospitals.find((el) => el.id === id))
+		);
+	}
 
 	return (
 		<div className="content">
-			<Row>
+			<Row id="details">
 				<InfoCard
 					icon="fas fa-head-side-cough"
 					description="Επιβαιβεωμένα"
-					info="1200"
-					footer={
-						<CardFooter>
-							<hr />
-							<div className="stats">
-								<i className="tim-icons icon-refresh-01" />{" "}
-								Update Now
-							</div>
-						</CardFooter>
-					}
+					info={selectedHospital.confirmed}
+					footer={<CardFooter></CardFooter>}
 				/>
 				<InfoCard
 					icon="fas fa-bed"
 					description="Διασωληνωμένοι"
-					info="90"
-					footer={
-						<CardFooter>
-							<hr />
-							<div className="stats">
-								<i className="tim-icons icon-refresh-01" />{" "}
-								Update Now
-							</div>
-						</CardFooter>
-					}
+					info={selectedHospital.admitted}
+					footer={<CardFooter></CardFooter>}
 				/>
 				<InfoCard
 					icon="fas fa-first-aid"
 					description="Θεραπευμένοι"
-					info="350"
-					footer={
-						<CardFooter>
-							<hr />
-							<div className="stats">
-								<i className="tim-icons icon-refresh-01" />{" "}
-								Update Now
-							</div>
-						</CardFooter>
-					}
+					info={selectedHospital.cured}
+					footer={<CardFooter></CardFooter>}
 				/>
 			</Row>
 			<Row>
-				<Col md="8">
-					<HospitalsMap></HospitalsMap>
-				</Col>
-				<Col md="4">
-					<Card className="card-chart">
-						<CardHeader>
-							<Row>
-								<Col className="text-left" sm="6">
-									<h5 className="card-category">
-										Total Shipments
-									</h5>
-									<CardTitle tag="h2">Performance</CardTitle>
-								</Col>
-								<Col sm="6">
-									<ButtonGroup vertical
-										className="btn-group-toggle float-right"
-										data-toggle="buttons"
-									>
-										<Button
-											color="info"
-											id="0"
-											size="sm"
-											tag="label"
-											className={classNames(
-												"btn-simple",
-												{
-													active:
-														currentData ===
-														"data1"
-												}
-                                            )}
-                                            style={{
-                                                marginLeft: 0
-                                            }}
-											onClick={() =>
-												setData(data => "data1")
-											}
-										>
-											<input
-												defaultChecked
-												name="options"
-												type="radio"
-											/>
-											<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-												Accounts
-											</span>
-											<span className="d-block d-sm-none">
-												<i className="tim-icons icon-single-02" />
-											</span>
-										</Button>
-										<Button
-											color="info"
-											id="1"
-											size="sm"
-											tag="label"
-											className={classNames(
-												"btn-simple",
-												{
-													active:
-														currentData ===
-														"data2"
-												}
-											)}
-											onClick={() =>
-												setData(data => "data2")
-											}
-										>
-											<input
-												name="options"
-												type="radio"
-											/>
-											<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-												Purchases
-											</span>
-											<span className="d-block d-sm-none">
-												<i className="tim-icons icon-gift-2" />
-											</span>
-										</Button>
-										<Button
-											color="info"
-											id="2"
-											size="sm"
-											tag="label"
-											className={classNames(
-												"btn-simple",
-												{
-													active:
-														currentData ===
-														"data3"
-												}
-											)}
-											onClick={() =>
-												setData(data => "data3")
-											}
-										>
-											<input
-												name="options"
-												type="radio"
-											/>
-											<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-												Sessions
-											</span>
-											<span className="d-block d-sm-none">
-												<i className="tim-icons icon-tap-02" />
-											</span>
-										</Button>
-									</ButtonGroup>
-								</Col>
-							</Row>
-						</CardHeader>
-						<CardBody>
-							<div className="chart-area">
-								<Line
-									data={
-										chartExample1[currentData]
-									}
-									options={chartExample1.options}
-								/>
-							</div>
-						</CardBody>
-					</Card>
+				<Col md={8}>
+					<HospitalsMap
+						hospitals={hospitals}
+						handleClick={changeHospital}
+					></HospitalsMap>
 				</Col>
 			</Row>
 		</div>

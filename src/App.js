@@ -20,7 +20,7 @@ export function App() {
 					path="/admin"
 					render={props => <DefaultLayout {...props} />}
 				/>
-				<Redirect from="/" to="/admin/dashboard" />
+				<Redirect from="/" to="/admin/hospitals" />
 			</Switch>
 		</Router>
 	);

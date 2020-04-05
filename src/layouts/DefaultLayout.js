@@ -7,12 +7,14 @@ import NotificationAlert from "react-notification-alert";
 import { DefaultNavbar } from "../components/Navbars/DefaultNavbar";
 import { Footer } from "../components/Footer/Footer";
 import Sidebar from "../components/Sidebar/Sidebar";
+import { SimulationOutputs } from "components/Hospitals/SimulationOutputs/SimulationOutputs";
 
 import routes from "../routes";
 
 import logo from "./../assets/img/react-logo.png";
+import { InputsForm } from "components/InputsForm/InputsForm";
 
-const activeColor = "blue";
+const activeColor = "green";
 
 export class DefaultLayout extends React.Component {
 	constructor(props) {
@@ -20,7 +22,7 @@ export class DefaultLayout extends React.Component {
 		this.state = {
 			sidebarMini: true,
 			opacity: 0,
-			sidebarOpened: false
+			sidebarOpened: false,
 		};
 		this.mainPanel = React.createRef();
 		this.notificationAlert = React.createRef();
@@ -40,7 +42,7 @@ export class DefaultLayout extends React.Component {
 			this.setState({ opacity: 0 });
 		}
 	};
-	getRoutes = routes => {
+	getRoutes = (routes) => {
 		return routes.map((prop, key) => {
 			if (prop.collapse) {
 				return this.getRoutes(prop.views);
@@ -58,7 +60,7 @@ export class DefaultLayout extends React.Component {
 			}
 		});
 	};
-	getActiveRoute = routes => {
+	getActiveRoute = (routes) => {
 		let activeRoute = "Default Brand Text";
 		for (let i = 0; i < routes.length; i++) {
 			if (routes[i].collapse) {
@@ -80,13 +82,13 @@ export class DefaultLayout extends React.Component {
 	};
 	toggleSidebar = () => {
 		this.setState({
-			sidebarOpened: !this.state.sidebarOpened
+			sidebarOpened: !this.state.sidebarOpened,
 		});
 		document.documentElement.classList.toggle("nav-open");
 	};
 	closeSidebar = () => {
 		this.setState({
-			sidebarOpened: false
+			sidebarOpened: false,
 		});
 		document.documentElement.classList.remove("nav-open");
 	};
@@ -116,7 +118,7 @@ export class DefaultLayout extends React.Component {
 					logo={{
 						outterLink: "/",
 						text: "Hfam",
-						imgSrc: logo
+						imgSrc: logo,
 					}}
 					closeSidebar={this.closeSidebar}
 				/>
@@ -133,7 +135,15 @@ export class DefaultLayout extends React.Component {
 					/>
 					<Switch>
 						{this.getRoutes(routes)}
-						<Redirect from="*" to="/admin/dashboard" />
+						<Route
+							path="/admin/outputs/:id"
+							render={(props) => <SimulationOutputs {...props} />}
+						/>
+						<Route
+							path="/admin/inputs/:id"
+							render={(props) => <InputsForm {...props} />}
+						/>
+						<Redirect from="*" to="/admin/hospitals" />
 					</Switch>
 					<Footer fluid />
 				</div>

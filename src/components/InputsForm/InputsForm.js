@@ -9,24 +9,26 @@ import {
 	CardFooter,
 	Card,
 	CardBody,
-	CardText,
 	CardHeader,
 	Button,
 	UncontrolledTooltip,
 } from "reactstrap";
 
 import { useForm } from "../../hooks/useForm";
+import { useHistory, useParams } from "react-router";
 
 export function InputsForm(props) {
+	const {id} = useParams();
+	const hist = useHistory();
 	const initialState = {
 		population: 100000,
-		hospitalMarketShare: 15,
+		hospitalMarketShare: 0.15,
 		currentHospitalized: 100,
 		dateOfFirstHospitalizedCase: Date.now(),
 		socialDistancing: 0.2,
 		hospitalizationPercent: 0.1,
 		icuNeedPercent: 0.15,
-		ventilationNeedPercent: 0.10,
+		ventilationNeedPercent: 0.1,
 		infectiousDays: 7,
 		averageHospitalLengthOfStay: 14,
 		averageDaysInICU: 14,
@@ -39,24 +41,27 @@ export function InputsForm(props) {
 	);
 
 	function submit() {
-		console.log(values);
 		fetch("http://hfam.team/api/predictioninputs/", {
-            method: "POST",
-            mode: "cors",
+			method: "POST",
+			mode: "cors",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(values),
 		})
 			.then((res) => res.json())
-            .then((json) => console.log(json))
-            .catch(err => console.log(err));
+			.then((json) => {
+				const path = "/admin/outputs/"+ json.id + "?hospitalId=" + id;
+				console.log(path);
+				hist.push(path)
+			} )
+			.catch((err) => console.log(err));
 	}
 
 	return (
 		<div className="content">
 			<Row>
-				<Col md="8">
+				<Col md="12">
 					<Card>
 						<CardHeader>
 							<h5 className="title">Αλλαγή Παραμέτρων</h5>
@@ -84,10 +89,10 @@ export function InputsForm(props) {
 											</Label>
 											<Input
 												type="range"
-												min="0"
-                                                max="100"
-                                                step="1"
-                                                name="hospitalMarketShare"
+												min={0}
+												max={1}
+												step={0.1}
+												name="hospitalMarketShare"
 												required
 												onChange={handleChange}
 												value={
@@ -98,7 +103,8 @@ export function InputsForm(props) {
 												placement="top"
 												target="input[name='hospitalMarketShare']"
 											>
-												{values.hospitalMarketShare * 100}
+												{values.hospitalMarketShare *
+													100}
 											</UncontrolledTooltip>
 										</FormGroup>
 									</Col>
@@ -108,7 +114,7 @@ export function InputsForm(props) {
 												Αριθμός ατόμων σε νοσοκομεία
 											</Label>
 											<Input
-												placeholder="80"
+												value={values.currentHospitalized}
 												type="number"
 												name="currentHospitalized"
 												required
@@ -124,7 +130,6 @@ export function InputsForm(props) {
 												Ημερομηνία πρώτης εισαγωγής
 											</Label>
 											<Input
-												defaultValue="15-03-19"
 												type="date"
 												name="dateOfFirstHospitalizedCase"
 												required
@@ -138,16 +143,16 @@ export function InputsForm(props) {
 												Κοινωνική αποστασιοποίηση
 											</Label>
 											<Input
-												defaultValue="20"
+												value={values.socialDistancing}
 												type="range"
-												min="1"
-												max="100"
-                                                step="1"
+												min={0}
+												max={1}
+												step={0.1}
 												name="socialDistancing"
 												required
 												onChange={handleChange}
 											/>
-                                            <UncontrolledTooltip
+											<UncontrolledTooltip
 												placement="top"
 												target="input[name='socialDistancing']"
 											>
@@ -161,20 +166,21 @@ export function InputsForm(props) {
 										<FormGroup>
 											<Label>Ποσοστό εισαγωγής</Label>
 											<Input
-												defaultValue="5"
+												value={values.hospitalizationPercent}
 												type="range"
 												min={0}
-												max={100}
-                                                step="1"
+												max={1}
+												step={0.1}
 												name="hospitalizationPercent"
 												required
 												onChange={handleChange}
 											/>
-                                            <UncontrolledTooltip
+											<UncontrolledTooltip
 												placement="top"
 												target="input[name='hospitalizationPercent']"
 											>
-												{values.hospitalizationPercent * 100}
+												{values.hospitalizationPercent *
+													100}
 											</UncontrolledTooltip>
 										</FormGroup>
 									</Col>
@@ -186,16 +192,16 @@ export function InputsForm(props) {
 												Ποσοστό που χρειάζονται ΜΕΘ
 											</Label>
 											<Input
-												defaultValue={5}
+												value={values.icuNeedPercent}
 												type="range"
 												min={0}
-												max={100}
-                                                step="1"
+												max={1}
+												step={0.1}
 												name="icuNeedPercent"
 												required
 												onChange={handleChange}
 											/>
-                                            <UncontrolledTooltip
+											<UncontrolledTooltip
 												placement="top"
 												target="input[name='icuNeedPercent']"
 											>
@@ -210,20 +216,21 @@ export function InputsForm(props) {
 												αναπνευστήρα
 											</Label>
 											<Input
-												defaultValue={5}
+												value={values.ventilationNeedPercent}
 												type="range"
 												min={0}
-												max={100}
-                                                step={1}
+												max={1}
+												step={0.1}
 												name="ventilationNeedPercent"
 												required
 												onChange={handleChange}
 											/>
-                                            <UncontrolledTooltip
+											<UncontrolledTooltip
 												placement="top"
 												target="input[name='ventilationNeedPercent']"
 											>
-												{values.ventilationNeedPercent * 100}
+												{values.ventilationNeedPercent *
+													100}
 											</UncontrolledTooltip>
 										</FormGroup>
 									</Col>
@@ -234,7 +241,7 @@ export function InputsForm(props) {
 											</Label>
 											<Input
 												type="number"
-												defaultValue={14}
+												value={values.infectiousDays}
 												name="infectiousDays"
 												required
 												onChange={handleChange}
@@ -249,7 +256,7 @@ export function InputsForm(props) {
 												Μέση διαμονή σε νοσοκομείο
 											</Label>
 											<Input
-												defaultValue={15}
+												value={values.averageHospitalLengthOfStay}
 												type="number"
 												min={0}
 												max={1000}
@@ -263,7 +270,7 @@ export function InputsForm(props) {
 										<FormGroup>
 											<Label>Μέση διαμονή σε ΜΕΘ</Label>
 											<Input
-												defaultValue={15}
+												value={values.averageDaysInICU}
 												type="number"
 												min={0}
 												max={1000}
@@ -279,7 +286,7 @@ export function InputsForm(props) {
 												Μέση διαμονή σε αναπνευστήρα
 											</Label>
 											<Input
-												defaultValue={15}
+												value={values.averageDaysOnVentilator}
 												type="number"
 												min={0}
 												max={1000}
@@ -295,7 +302,7 @@ export function InputsForm(props) {
 										<FormGroup>
 											<Label>Μέρες προσομοίωσης</Label>
 											<Input
-												defaultValue={7}
+												value={values.numberOfDaysToProject}
 												type="number"
 												min={1}
 												name="numberOfDaysToProject"
@@ -317,21 +324,6 @@ export function InputsForm(props) {
 								Save
 							</Button>
 						</CardFooter>
-					</Card>
-				</Col>
-				<Col md="4">
-					<Card className="card-user">
-						<CardBody>
-							<h3>Τρέχουσες τιμές</h3>
-							<ul className="list-unstyled">
-								{Object.keys(values).map((key) => (
-									<li>
-										{key} : {values[key]}
-									</li>
-								))}
-							</ul>
-						</CardBody>
-						<CardFooter></CardFooter>
 					</Card>
 				</Col>
 			</Row>
